@@ -61,7 +61,7 @@ const CollegeViewLaboratories = ({ history }) => {
             labelPosition='left'
             onClick={redirectToAdd}
           >
-            <p style={{ color: 'black' }}>Request to Add Laboratory</p>
+            <p style={{ color: 'black' }}>Add Laboratory</p>
           </Button>
         </div>
         <div style={{ marginTop: '2%' }}>

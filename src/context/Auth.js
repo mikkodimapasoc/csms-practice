@@ -4,10 +4,15 @@ import { auth } from '../firebase/firebase';
 export const AuthContext = React.createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState({ email: '' });
+  const [currentUser, setCurrentUser] = useState({
+    email: '',
+    displayName: ''
+  });
 
   useEffect(() => {
-    auth().onAuthStateChanged(setCurrentUser);
+    const unsubscibe = auth().onAuthStateChanged(setCurrentUser);
+
+    return () => unsubscibe();
   }, []);
 
   return (

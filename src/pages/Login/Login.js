@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
-import { login } from '../../firebase/firebase';
+import { login, auth } from '../../firebase/firebase';
 import { withRouter, Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import {
@@ -11,7 +11,9 @@ import {
   Message,
   Header
 } from 'semantic-ui-react';
-import logo from '../../assets/images/ust.jpg';
+import logo from '../../assets/images/loginPicture.jpg';
+import ustlogo from '../../assets/images/ust.jpg';
+import './Login.css';
 const Login = ({ history }) => {
   // const [equipments, setState] = useState(null);
   // useEffect(() => {
@@ -33,19 +35,36 @@ const Login = ({ history }) => {
   //   [history]
   // );
 
+  const style = {
+    backgroundImage: `url("${logo}")`,
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover'
+  };
   const handleLogin = useCallback(
     async event => {
       event.preventDefault();
       const { email, password } = event.target.elements;
       try {
         await login(email.value, password.value);
-        history.push('/LesoHome');
+
+        history.push('/Navigation');
       } catch (error) {
         alert(error);
       }
     },
     [history]
   );
+  // const handleLogin = event => {
+  //   const { email, password } = event.target.elements;
+  //   auth()
+  //     .signInWithEmailAndPassword(email.value, password.value)
+  //     .then(() => {
+  //       history.push('/LesoHome');
+  //     })
+  //     .catch(error => alert(error));
+  //   event.preventDefault();
+  // };
   const redirectToCollege = () => {
     history.push('/CollegeHome');
   };
@@ -67,7 +86,12 @@ const Login = ({ history }) => {
         verticalAlign='middle'
       >
         <Grid.Column style={{ maxWidth: 450 }}>
-          <Image src={logo} size='small' centered onClick={redirectToCollege} />
+          <Image
+            src={ustlogo}
+            size='small'
+            centered
+            onClick={redirectToCollege}
+          />
           <Header as='h2' color='yellow' textAlign='center'>
             University of Santo Tomas
           </Header>
@@ -100,6 +124,7 @@ const Login = ({ history }) => {
                 type='submit'
                 fluid
                 size='large'
+                style={{ color: 'black' }}
               >
                 Login
               </Button>

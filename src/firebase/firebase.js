@@ -19,7 +19,16 @@ const init = () => {
 };
 
 const login = (email, password) => {
-  auth().signInWithEmailAndPassword(email, password);
+  auth()
+    // .signInWithEmailAndPassword(email, password)
+    // .then(details => console.log(details));
+    .signInWithEmailAndPassword(email, password)
+    .then(deatils => console.log(deatils))
+    .catch(function(error) {
+      // Handle Errors here.
+      alert(error);
+      // ...
+    });
 };
 
 const logoutUser = () => {
@@ -37,6 +46,12 @@ const setUser = setCurrent => {
   });
 };
 
+const updateUser = () => {
+  auth().updateProfile({
+    displayName: 'LESO'
+  });
+};
+
 let firestoreMethods = {
   get: route => {
     return firestore()
@@ -46,8 +61,11 @@ let firestoreMethods = {
         let value = [],
           keys = [];
         querySnapshot.forEach(doc => {
-          value.push(doc.data());
-          keys.push(doc.id);
+          // value.push(doc.data());
+          // keys.push(doc.id);
+          let temp = doc.data();
+          temp['key'] = doc.id;
+          value.push(temp);
         });
         return { value: value, keys: keys };
       });
@@ -72,11 +90,12 @@ let firestoreMethods = {
       });
   },
 
+  // data = key value pair
   update: (route, data, key) => {
     return firestore()
       .collection('/' + route)
       .doc(key)
-      .set(data)
+      .update(data)
       .then(function(docRef) {
         return { status: true, msg: 'Document successfuly updated' };
       })
@@ -99,8 +118,11 @@ let firestoreMethods = {
         let value = [],
           keys = [];
         querySnapshot.forEach(doc => {
-          value.push(doc.data());
-          keys.push(doc.id);
+          // value.push(doc.data());
+          // keys.push(doc.id);
+          let temp = doc.data();
+          temp['key'] = doc.id;
+          value.push(temp);
         });
         return { value: value, keys: keys };
       });
@@ -299,5 +321,6 @@ export {
   // setUser,
   firestoreMethods,
   realtimeDatabase,
-  auth
+  auth,
+  updateUser
 };

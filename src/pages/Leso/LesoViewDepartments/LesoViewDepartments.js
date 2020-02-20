@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Card, Button, Icon, Container } from 'semantic-ui-react';
+import {
+  Grid,
+  Card,
+  Button,
+  Icon,
+  Container,
+  Segment,
+  Header,
+  Image
+} from 'semantic-ui-react';
 import { realtimeDatabase } from '../../../firebase/firebase';
 import { withRouter, Redirect } from 'react-router';
 import MenuBar from '../LesoMenuBar/LesoMenuBar';
@@ -10,7 +19,7 @@ const LesoViewColleges = ({ history, location }) => {
   const { selected } = location.state;
   useEffect(() => {
     realtimeDatabase
-      .getWhere('/Departments', 'col_code', selected)
+      .getWhere('/Departments', 'college', selected)
       .then(data => {
         setDepartments(data.values);
       });
@@ -35,29 +44,41 @@ const LesoViewColleges = ({ history, location }) => {
 
   console.log(departments);
 
+  // const segmentDisplay = departments.map(department => {
+  //   const { name, uid, code } = department;
+  //   return (
+  //     <Segment
+  //       key={uid}
+  //       color='yellow'
+  //       size='massive'
+  //       onClick={() => handleButtons(name)}
+  //       className='segmentBanner'
+  //     >
+  //       <Header as='h2' textAlign='center' style={{ color: 'black' }}>
+  //         {department.name}
+  //       </Header>
+  //     </Segment>
+  //   );
+  // });
+
   const Cards = departments.map(department => {
-    const { code, uid } = department;
+    const { name, code, uid } = department;
     return (
-      <Card color='yellow' key={uid}>
+      <Card
+        onClick={() => handleButtons(name)}
+        color='yellow'
+        key={uid}
+        style={{ cursor: 'pointer' }}
+      >
         <Card.Content>
-          {/* <Image floated='right' size='mini' src={logo} /> */}
-          <Card.Header>{department.name}</Card.Header>
-          <Card.Meta> Uncalibrated Equipments inside!</Card.Meta>
+          <Image src={department.image} size='large' centered />
+          <Card.Header style={{ marginTop: '2%' }} textAlign='center'>
+            {department.name}
+          </Card.Header>
+          <Card.Description>10 equipments uncalibrated</Card.Description>
+          <Card.Description>5 equipments for Review</Card.Description>
         </Card.Content>
-        <Card.Content extra>
-          <div className='ui two buttons'>
-            <Button
-              className='viewButton'
-              color='yellow'
-              icon
-              labelPosition='left'
-              onClick={() => handleButtons(code)}
-            >
-              <Icon name='lab' className='viewIcon' />
-              <p className='viewIcon'>View</p>
-            </Button>
-          </div>
-        </Card.Content>
+        <Card.Content extra></Card.Content>
       </Card>
     );
   });
@@ -65,9 +86,26 @@ const LesoViewColleges = ({ history, location }) => {
     <div>
       <MenuBar />
       <Container>
-        <div style={{ marginTop: '2%' }}>
-          <Card.Group>{Cards}</Card.Group>
-        </div>
+        <Segment textAlign='center'>
+          <Header icon>
+            {/* <Image style={{ width: '140px' }} src={lesoLogo} fluid /> */}
+            {/* <Image
+              src='https://react.semantic-ui.com/images/avatar/large/daniel.jpg'
+              wrapped
+              ui={false}
+            /> */}
+            <Header as='h2' textAlign='center'>
+              <Icon name='lab' />
+              <Header.Content>
+                {selected} Departments
+                <Header.Subheader>
+                  Select a department to view their laboratories
+                </Header.Subheader>
+              </Header.Content>
+            </Header>
+          </Header>
+        </Segment>
+        <Card.Group itemsPerRow={4}>{Cards}</Card.Group>
       </Container>
     </div>
   );

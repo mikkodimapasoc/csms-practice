@@ -1,21 +1,25 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { AuthContext } from '../context/Auth';
 
-const LesoPrivateRoute = ({ component: RouteComponent, ...rest }) => {
-  const { currentUser } = useContext(AuthContext);
+export default function LesoPrivateRoute({
+  component: Component,
+  authenticated,
+  currentUser,
+  email,
+  ...rest
+}) {
   return (
     <Route
       {...rest}
-      render={routeProps =>
-        !!currentUser ? (
-          <RouteComponent {...routeProps} />
+      render={props =>
+        authenticated === true &&
+        (email === 'mikko.dimapasoc@gmail.com' ||
+          email === 'admin-leso@gmail.com') ? (
+          <Component {...props} {...rest} />
         ) : (
-          <Redirect to={'/'} />
+          <Redirect to='/' />
         )
       }
     />
   );
-};
-
-export default LesoPrivateRoute;
+}

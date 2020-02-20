@@ -1,21 +1,25 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { AuthContext } from '../context/Auth';
 
-const CollegePrivateRoute = ({ component: RouteComponent, ...rest }) => {
-  const { currentUser } = useContext(AuthContext);
+export default function CollegePrivateRoute({
+  component: Component,
+  authenticated,
+  currentUser,
+  email,
+  ...rest
+}) {
   return (
     <Route
       {...rest}
-      render={routeProps =>
-        !!currentUser ? (
-          <RouteComponent {...routeProps} />
+      render={props =>
+        authenticated === true &&
+        (email === 'pharmacy.college@gmail.com' ||
+          email === 'crs.college@gmail.com') ? (
+          <Component {...props} {...rest} />
         ) : (
-          <Redirect to={'/'} />
+          <Redirect to='/' />
         )
       }
     />
   );
-};
-
-export default CollegePrivateRoute;
+}

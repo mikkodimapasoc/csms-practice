@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import LesoMenuBar from '../LesoMenuBar/LesoMenuBar';
-import { Button, Header, Icon, Segment, Container } from 'semantic-ui-react';
+import {
+  Button,
+  Header,
+  Icon,
+  Segment,
+  Container,
+  Form,
+  TextArea
+} from 'semantic-ui-react';
 
 import { firestoreMethods } from '../../../firebase/firebase';
 import { withRouter, Redirect } from 'react-router';
@@ -70,6 +78,15 @@ const LesoViewEquipment = () => {
               Reject for Calibration
             </Button>
           </div>
+        </Segment>
+        <Segment color='yellow'>
+          <Header size='medium'>Remarks</Header>
+          <Form>
+            <TextArea placeholder='Leave some Remarks' />
+            <Button onClick={() => alert('Remarks submitted')} color='blue'>
+              Submit
+            </Button>
+          </Form>
         </Segment>
       </Container>
     </div>

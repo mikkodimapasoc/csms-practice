@@ -1,121 +1,135 @@
-import React from 'react';
-import { Grid, Card, Feed, Container, Icon } from 'semantic-ui-react';
+import React, { useEffect, useState, useContext, useLayoutEffect } from 'react';
+import {
+  Grid,
+  Card,
+  Feed,
+  Container,
+  Icon,
+  Segment,
+  Header,
+  Image
+} from 'semantic-ui-react';
 import LesoMenuBar from '../LesoMenuBar/LesoMenuBar';
+import { auth, realtimeDatabase } from '../../../firebase/firebase';
+import { withRouter } from 'react-router';
+import lesoLogo from '../../../assets/images/logo.jpg';
+import CrsLogo from '../../../assets/images/Crs.jpg';
+import PharmacyLogo from '../../../assets/images/Pharmacy.jpg';
+import ScienceLogo from '../../../assets/images/Science.jpg';
+import './LesoHome.css';
+import { AuthContext } from '../../../context/Auth';
+const LesoHome = props => {
+  const { currentUser } = useContext(AuthContext);
+  const [colleges, setColleges] = useState([]);
 
-const LesoHome = () => {
+  useEffect(() => {
+    realtimeDatabase.get('/Colleges').then(data => {
+      setColleges(data.values);
+    });
+  }, []);
+
+  const handleButtons = selected => {
+    // setSelectedCollege(selected);
+    // state = passed state to the next component
+    props.history.push({
+      pathname: '/LesoViewLaboratories',
+      state: { selected }
+    });
+  };
+
+  const segmentDisplay = colleges.map(college => {
+    const { name, uid } = college;
+    return (
+      <Segment
+        key={uid}
+        color='yellow'
+        size='massive'
+        onClick={() => handleButtons(name)}
+        className='segmentBanner'
+      >
+        <Header as='h2' textAlign='center' style={{ color: 'black' }}>
+          {college.name}
+        </Header>
+      </Segment>
+    );
+  });
   return (
     <div>
       <LesoMenuBar />;
-      <div>
-        <Container>
-          <Grid className='rowCards'>
-            <Grid.Row centered columns={3}>
-              <Grid.Column>
-                <Card color='yellow'>
-                  <Card.Content>
-                    <Card.Header>Notifications</Card.Header>
-                  </Card.Content>
-                  <Card.Content>
-                    <Feed>
-                      <Feed.Event>
-                        <Icon name='exclamation' size='big' />
-                        <Feed.Content>
-                          <Feed.Date content='1 day ago' />
-                          <Feed.Summary>
-                            Notifications Sent! Laboratory 2 of Faculty of
-                            Pharmacy
-                          </Feed.Summary>
-                        </Feed.Content>
-                      </Feed.Event>
-                      <Feed.Event>
-                        <Icon name='exclamation' size='big' />
-                        <Feed.Content>
-                          <Feed.Date content='3 days ago' />
-                          <Feed.Summary>
-                            Notifications Sent! Laboratory 2 of Faculty of CRS
-                          </Feed.Summary>
-                        </Feed.Content>
-                      </Feed.Event>
-                      <Feed.Event>
-                        <a>See more</a>
-                      </Feed.Event>
-                    </Feed>
-                  </Card.Content>
-                </Card>
-              </Grid.Column>
+      {/* <div>
+        <Segment textAlign='center'>
+          <Header as='h2' textAlign='center'>
+            <Icon name='settings' />
+            <Header.Content>
+              
+              <Header.Subheader>
+                Select a College to view their departments
+              </Header.Subheader>
+            </Header.Content>
+          </Header>
+        </Segment>
+        <Container>{segmentDisplay}</Container>
+      </div> */}
+      <Container>
+        <Segment textAlign='center'>
+          <Header icon>
+            {/* <Image style={{ width: '50%' }} src={lesoLogo} centered /> */}
+            <Header as='h2' textAlign='center'>
+              <Icon name='lab' />
+              <Header.Content>
+                Leso Colleges
+                <Header.Subheader>
+                  <p style={{ fontWeight: 'bold' }}>
+                    Select a college to view their Laboratories
+                  </p>
+                </Header.Subheader>
+              </Header.Content>
+            </Header>
+          </Header>
+        </Segment>
+        {/* {segmentDisplay} */}
 
-              <Grid.Column>
-                <Card color='yellow'>
-                  <Card.Content>
-                    <Card.Header>Calibration Summary</Card.Header>
-                  </Card.Content>
-                  <Card.Content>
-                    <Feed>
-                      <Feed.Event>
-                        <Icon name='exclamation' size='big' />
-                        <Feed.Content>
-                          <Feed.Date content='1 day ago' />
-                          <Feed.Summary>
-                            5 uncalibrated Equipments
-                            <a> - College of Science</a>
-                          </Feed.Summary>
-                        </Feed.Content>
-                      </Feed.Event>
-                      <Feed.Event>
-                        <Icon name='exclamation' size='big' />
-                        <Feed.Content>
-                          <Feed.Date content='3 days ago' />
-                          <Feed.Summary>
-                            2 equipments On process <a>Faculty of Pharmacy</a>
-                          </Feed.Summary>
-                        </Feed.Content>
-                      </Feed.Event>
-                      <Feed.Event>
-                        <a>See more</a>
-                      </Feed.Event>
-                    </Feed>
-                  </Card.Content>
-                </Card>
-              </Grid.Column>
+        <Segment
+          color='yellow'
+          size='massive'
+          onClick={() => handleButtons('Science')}
+          className='segmentBanner'
+        >
+          <Image src={ScienceLogo} size='tiny' centered />
+          <Header as='h2' textAlign='center' style={{ color: 'black' }}>
+            College of Science
+          </Header>
+        </Segment>
 
-              <Grid.Column>
-                <Card color='yellow'>
-                  <Card.Content>
-                    <Card.Header>Calibration Dues for the Month</Card.Header>
-                  </Card.Content>
-                  <Card.Content>
-                    <Feed>
-                      <Feed.Event>
-                        <Icon name='exclamation' size='big' />
-                        <Feed.Content>
-                          <Feed.Date content='1 day ago' />
-                          <Feed.Summary>
-                            Biology Laboratory <a> November 1, 2019</a>
-                          </Feed.Summary>
-                        </Feed.Content>
-                      </Feed.Event>
-                      <Feed.Event>
-                        <Icon name='exclamation' size='big' />
-                        <Feed.Content>
-                          <Feed.Date content='3 days ago' />
-                          <Feed.Summary>
-                            Physics Laboratory <a>November 1, 2019</a>
-                          </Feed.Summary>
-                        </Feed.Content>
-                      </Feed.Event>
-                      <Feed.Event>
-                        <a>See more</a>
-                      </Feed.Event>
-                    </Feed>
-                  </Card.Content>
-                </Card>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Container>
-      </div>
+        {/* ----------------- */}
+
+        <Segment
+          color='yellow'
+          size='massive'
+          onClick={() => handleButtons('Crs')}
+          className='segmentBanner'
+        >
+          <Image src={CrsLogo} size='tiny' centered />
+          <Header as='h2' textAlign='center' style={{ color: 'black' }}>
+            College of Rehabilitation Sciences
+          </Header>
+        </Segment>
+        {/* ------------------ */}
+
+        <Segment
+          color='yellow'
+          size='massive'
+          onClick={() => handleButtons('Pharmacy')}
+          className='segmentBanner'
+        >
+          <Image src={PharmacyLogo} size='tiny' centered />
+          <Header as='h2' textAlign='center' style={{ color: 'black' }}>
+            Faculty of Pharmacy
+          </Header>
+        </Segment>
+      </Container>
     </div>
   );
 };
 
-export default LesoHome;
+export default withRouter(LesoHome);
